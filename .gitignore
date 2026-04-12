@@ -1,0 +1,10 @@
+node_modules/
+
+# Logs e arquivos de sistema
+*.log
+.DS_Store
+.env
+
+# Pastas de build/dist
+dist/
+build/
