@@ -1,15 +1,24 @@
 const { Kafka } = require('kafkajs');
+const config = require('./config'); // Usando o config que já criamos
 
-const kafka = new Kafka({ clientId: 'my-app', brokers: ['localhost:9092'] });
+const kafka = new Kafka({ 
+  clientId: 'order-api', 
+  brokers: [config.kafka.broker] 
+});
+
 const producer = kafka.producer();
 
-async function run() {
+// Função para enviar a mensagem
+async function sendOrderEvent(orderData) {
   await producer.connect();
   await producer.send({
     topic: 'pedido-criado',
-    messages: [{ value: JSON.stringify({ orderId: '123', status: 'CRIADO' }) }],
+    messages: [
+      { value: JSON.stringify(orderData) }
+    ],
   });
-  console.log("Pedido enviado!");
-  await producer.disconnect();
+  console.log(`[KAFKA PRODUCER] Evento enviado: ${orderData.orderId}`);
 }
-run();
+
+// Exportamos a função em vez de rodar o run()
+module.exports = { sendOrderEvent };
